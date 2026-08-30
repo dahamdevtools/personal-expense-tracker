@@ -19,11 +19,11 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-neutral-400);
+  background: var(--color-neutral-300);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neutral-500);
+  background: var(--color-neutral-400);
 }
 
 button {

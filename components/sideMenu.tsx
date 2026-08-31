@@ -3,22 +3,30 @@
 import { NavItemTypes } from "@/types/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LuLayers, LuWallet } from "react-icons/lu";
+import {
+  LuArrowLeft,
+  LuHandCoins,
+  LuLayers,
+  LuSquareStack,
+  LuWallet,
+} from "react-icons/lu";
 
 const NavItems: NavItemTypes[] = [
   { route: "/dashboard", label: "Dashboard", icon: <LuLayers /> },
-  { route: "/expenses", label: "Expenses", icon: <LuWallet /> },
+  { route: "/expenses", label: "Expenses", icon: <LuHandCoins /> },
+  { route: "/income", label: "Income", icon: <LuWallet /> },
+  { route: "/categories", label: "Categories", icon: <LuSquareStack /> },
 ];
 
 export default function SideMenu() {
   const pathName = usePathname();
 
   return (
-    <div className="w-90 h-screen hidden lg:flex overflow-hidden py-3.5">
+    <div className="w-72 h-screen hidden lg:flex overflow-hidden py-3.5">
       <div className="w-full h-full flex flex-col rounded-2xl bg-neutral-50">
         <div className="w-full h-fit flex px-3.5">
           <div className="w-full h-fit py-6 px-4 border-b border-neutral-200">
-            <p className="text-lg">App Name</p>
+            <p className="text-lg">Expense Tracker</p>
           </div>
         </div>
         <div className="w-full min-h-0 flex-1 flex-col overflow-y-auto p-8">
@@ -35,12 +43,10 @@ export default function SideMenu() {
         </div>
         <div className="w-full h-fit px-3.5 flex">
           <div className="w-full h-fit flex items-center justify-center py-4 border-t border-neutral-200">
-            <Link
-              href={"https://github.com/dahamdevtools"}
-              className="text-center hover:underline text-neutral-500"
-            >
-              @dahamdevtools
-            </Link>
+            <button className="w-full h-12 rounded-xl flex items-center px-4 gap-2 duration-200 hover:bg-neutral-200/50">
+              <LuArrowLeft className="text-lg" />
+              <span>Log Out</span>
+            </button>
           </div>
         </div>
       </div>

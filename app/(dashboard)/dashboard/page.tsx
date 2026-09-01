@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   LuArrowRight,
   LuBanknote,
@@ -99,10 +100,13 @@ export default function Dashboard() {
       </table>
       <div className="w-full h-fit flex items-center justify-between gap-6">
         <h3 className="text-lg font-semibold">Recent Income</h3>
-        <button className="w-fit h-10 px-3 gap-2 ps-5 flex items-center rounded-xl bg-neutral-200">
+        <Link
+          href={"/income"}
+          className="w-fit h-10 px-3 gap-2 ps-5 flex items-center rounded-xl bg-neutral-200"
+        >
           <span>See All</span>
           <LuArrowRight className="text-lg" />
-        </button>
+        </Link>
       </div>
       <table className="bg-neutral-50 rounded-2xl overflow-hidden">
         <thead>
@@ -152,10 +156,13 @@ export default function Dashboard() {
       </table>
       <div className="w-full h-fit flex items-center justify-between gap-6">
         <h3 className="text-lg font-semibold">Recent Expenses</h3>
-        <button className="w-fit h-10 px-3 gap-2 ps-5 flex items-center rounded-xl bg-neutral-200">
+        <Link
+          href={"/expenses"}
+          className="w-fit h-10 px-3 gap-2 ps-5 flex items-center rounded-xl bg-neutral-200"
+        >
           <span>See All</span>
           <LuArrowRight className="text-lg" />
-        </button>
+        </Link>
       </div>
       <table className="bg-neutral-50 rounded-2xl overflow-hidden">
         <thead>

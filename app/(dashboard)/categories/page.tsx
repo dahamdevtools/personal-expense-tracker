@@ -13,13 +13,21 @@ export default function Categories() {
     <div className="w-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
       <div className="w-full h-fit flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl">Categories</h1>
-        <button
-          onClick={() => setIsAddCategoryModalOpen(true)}
-          className="w-fit h-10 px-3 gap-2 pe-5 flex items-center rounded-xl text-indigo-500 bg-indigo-100"
-        >
-          <LuPlus className="text-lg" />
-          <span>Add Category</span>
-        </button>
+        <div className="w-fit h-fit flex flex-wrap items-center gap-2">
+          <input
+            type="text"
+            spellCheck="false"
+            placeholder="Search Category..."
+            className="w-full sm:max-w-64 h-10 rounded-xl px-4 truncate bg-neutral-200"
+          />
+          <button
+            onClick={() => setIsAddCategoryModalOpen(true)}
+            className="w-fit h-10 px-3 gap-2 pe-5 flex items-center rounded-xl text-indigo-500 bg-indigo-100"
+          >
+            <LuPlus className="text-lg" />
+            <span>Add Category</span>
+          </button>
+        </div>
       </div>
       <div className="w-full h-fit flex flex-wrap gap-2">
         {Array.from({ length: 20 }).map((_, index) => (

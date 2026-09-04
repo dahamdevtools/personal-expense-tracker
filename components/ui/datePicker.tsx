@@ -44,6 +44,15 @@ export function DatePicker() {
           selected={date}
           onSelect={setDate}
           defaultMonth={date}
+          classNames={{
+            caption_label: "text-base",
+            day_button:
+              "text-base rounded-xl hover:bg-neutral-200/50 data-[selected-single=true]:bg-indigo-100 data-[selected-single=true]:text-indigo-500",
+            day: "size-9",
+            weekday:
+              "text-base size-9 flex items-center justify-center font-normal text-neutral-400",
+            chevron: "size-5",
+          }}
         />
       </PopoverContent>
     </Popover>

@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`expenses` (
   CONSTRAINT `fk_expenses_categories`
     FOREIGN KEY (`category_id`)
     REFERENCES `expense_tracker`.`categories` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_expenses_users1`
     FOREIGN KEY (`user_id`)
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`income` (
   CONSTRAINT `fk_income_categories1`
     FOREIGN KEY (`category_id`)
     REFERENCES `expense_tracker`.`categories` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_income_users1`
     FOREIGN KEY (`user_id`)

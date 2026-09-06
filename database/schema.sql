@@ -43,7 +43,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `expense_tracker`.`expenses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `amount` DECIMAL(10,2) NOT NULL,
-  `description` TEXT NOT NULL,
+  `description` TEXT NULL,
   `date` DATETIME NOT NULL,
   `category_id` INT NULL,
   `user_id` INT NOT NULL,
@@ -69,7 +69,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `expense_tracker`.`income` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `amount` DECIMAL(10,2) NOT NULL,
-  `description` TEXT NOT NULL,
+  `description` TEXT NULL,
   `date` DATETIME NOT NULL,
   `category_id` INT NULL,
   `user_id` INT NOT NULL,

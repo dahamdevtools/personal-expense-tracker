@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`expenses` (
   `amount` DECIMAL(10,2) NOT NULL,
   `description` TEXT NOT NULL,
   `date` DATETIME NOT NULL,
-  `category_id` INT NOT NULL,
+  `category_id` INT NULL,
   `user_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_expenses_categories_idx` (`category_id` ASC) VISIBLE,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`expenses` (
   CONSTRAINT `fk_expenses_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `expense_tracker`.`users` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`income` (
   `amount` DECIMAL(10,2) NOT NULL,
   `description` TEXT NOT NULL,
   `date` DATETIME NOT NULL,
-  `category_id` INT NOT NULL,
+  `category_id` INT NULL,
   `user_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_income_categories1_idx` (`category_id` ASC) VISIBLE,
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `expense_tracker`.`income` (
   CONSTRAINT `fk_income_users1`
     FOREIGN KEY (`user_id`)
     REFERENCES `expense_tracker`.`users` (`id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 

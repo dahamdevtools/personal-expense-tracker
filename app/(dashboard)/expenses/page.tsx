@@ -2,15 +2,37 @@
 
 import AddExpenseModal from "@/components/addExpenseModal";
 import EditExpenseModal from "@/components/editExpenseModal";
-import { useState } from "react";
+import { Expense } from "@/types";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 
 export default function Expenses() {
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState<null | number>(null);
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+
+  const fetchExpenses = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/expenses");
+      const data = await res.json();
+      setExpenses(data);
+    } catch (error) {
+      console.error("Failed to fetch expenses", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchExpenses();
+  }, []);
 
   return (
-    <div className="w-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
+    <div className="w-full h-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
       <div className="w-full h-fit flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl">Expenses</h1>
         <div className="w-fit h-fit flex flex-wrap items-center gap-2">
@@ -30,48 +52,63 @@ export default function Expenses() {
         </div>
       </div>
 
-      <table className="bg-neutral-50 rounded-2xl overflow-hidden">
-        <thead>
-          <tr className="bg-neutral-200">
-            <th className="font-normal text-start p-3 px-5">Date</th>
-            <th className="font-normal text-start p-3 px-5">Category</th>
-            <th className="font-normal text-start p-3 px-5">Description</th>
-            <th className="font-normal text-start p-3 px-5">Amount</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-neutral-200">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <tr
-              className="cursor-pointer"
-              key={index}
-              onClick={() => setSelectedExpense(index)}
-            >
-              <td className="p-3 px-5">2026.08.31</td>
-              <td className="p-3 px-5">Shopping</td>
-              <td className="p-3 px-5">
-                <p className="text-ellipsis line-clamp-1">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Aspernatur, ab.
-                </p>
-              </td>
-              <td className="p-2 ps-5">
-                <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
-                  <span>-</span>
-                  <span>$40</span>
-                </span>
-              </td>
+      {loading ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>Loading...</p>
+        </div>
+      ) : expenses.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No expense yet.</p>
+        </div>
+      ) : (
+        <table className="bg-neutral-50 rounded-2xl overflow-hidden">
+          <thead>
+            <tr className="bg-neutral-200">
+              <th className="font-normal text-start p-3 px-5">Date</th>
+              <th className="font-normal text-start p-3 px-5">Category</th>
+              <th className="font-normal text-start p-3 px-5">Description</th>
+              <th className="font-normal text-start p-3 px-5">Amount</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-neutral-200">
+            {expenses.map((expense) => (
+              <tr
+                className="cursor-pointer"
+                key={expense.id}
+                onClick={() => setSelectedExpense(expense)}
+              >
+                <td className="p-3 px-5">
+                  {format(new Date(expense.date), "MMM dd, yyyy")}
+                </td>
+                <td className="p-3 px-5">{expense.category}</td>
+                <td className="p-3 px-5">
+                  <p className="text-ellipsis line-clamp-1">
+                    {expense.description}
+                  </p>
+                </td>
+                <td className="p-2 ps-5">
+                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
+                    <span>-</span>
+                    <span>LKR {expense.amount}</span>
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {isAddExpenseModalOpen && (
-        <AddExpenseModal onClose={() => setIsAddExpenseModalOpen(false)} />
+        <AddExpenseModal
+          onClose={() => setIsAddExpenseModalOpen(false)}
+          onSuccess={fetchExpenses}
+        />
       )}
       {selectedExpense !== null && (
         <EditExpenseModal
-          id={selectedExpense}
+          expense={selectedExpense}
           onClose={() => setSelectedExpense(null)}
+          onSuccess={fetchExpenses}
         />
       )}
     </div>

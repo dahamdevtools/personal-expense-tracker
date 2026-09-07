@@ -1,13 +1,25 @@
+"use client";
+
 import { LuX } from "react-icons/lu";
 import { DatePicker } from "./ui/datePicker";
 import { CategorySelect } from "./categorySelect";
+import { Expense } from "@/types";
+import { useState } from "react";
 
 interface Props {
+  expense: Expense;
   onClose: () => void;
-  id: number;
+  onSuccess: () => void;
 }
 
-export default function EditExpenseModal({ onClose, id }: Props) {
+export default function EditExpenseModal({
+  onClose,
+  expense,
+  onSuccess,
+}: Props) {
+  const [category, setCategory] = useState<number | null>(null);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
   return (
     <div className="w-screen h-screen fixed top-0 left-0 z-10 flex items-center justify-center p-7 bg-neutral-900/5">
       <div className="w-full max-w-sm h-fit flex flex-col rounded-2xl bg-neutral-50">
@@ -26,7 +38,7 @@ export default function EditExpenseModal({ onClose, id }: Props) {
         <div className="w-full h-fit flex flex-col gap-4 p-4">
           <div className="w-full h-fit flex flex-col gap-1">
             <label htmlFor="category">Category</label>
-            <CategorySelect />
+            <CategorySelect value={category} onValueChange={setCategory} />
           </div>
           <div className="w-full h-fit flex flex-col gap-1">
             <label htmlFor="amount">Amount</label>
@@ -53,7 +65,7 @@ export default function EditExpenseModal({ onClose, id }: Props) {
           </div>
           <div className="w-full h-fit flex flex-col gap-1">
             <label htmlFor="date">Date</label>
-            <DatePicker />
+            <DatePicker date={date} onDateChange={setDate} />
           </div>
         </div>
         <div className="w-full h-fit flex flex-wrap justify-end p-4 pt-0 gap-2">

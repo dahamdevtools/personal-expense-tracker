@@ -1,8 +1,4 @@
-"use client";
-
-import * as React from "react";
 import { format } from "date-fns";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,9 +8,12 @@ import {
 } from "@/components/ui/popover";
 import { LuCalendar } from "react-icons/lu";
 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date>();
+interface Props {
+  date: Date | undefined;
+  onDateChange: (date: Date | undefined) => void;
+}
 
+export function DatePicker({ date, onDateChange }: Props) {
   return (
     <Popover>
       <PopoverTrigger
@@ -42,7 +41,7 @@ export function DatePicker() {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={onDateChange}
           defaultMonth={date}
           classNames={{
             caption_label: "text-base",

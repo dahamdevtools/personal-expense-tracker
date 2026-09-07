@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -5,30 +7,49 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Category } from "@/types";
+import { useEffect, useState } from "react";
 
-const items = [
-  { label: "Select a fruit", value: null },
-  { label: "Apple", value: "apple" },
-  { label: "Banana", value: "banana" },
-  { label: "Blueberry", value: "blueberry" },
-  { label: "Grapes", value: "grapes" },
-  { label: "Pineapple", value: "pineapple" },
-];
+interface Props {
+  value: number | null;
+  onValueChange: (value: number | null) => void;
+}
 
-export function CategorySelect() {
+export function CategorySelect({ value, onValueChange }: Props) {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const fetchCategories = async () => {
+    const res = await fetch("/api/categories");
+    const data = await res.json();
+    setCategories(data);
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const items = categories.map((category) => ({
+    label: category.name,
+    value: category.id,
+  }));
+
   return (
-    <Select items={items}>
+    <Select
+      items={items}
+      value={value}
+      onValueChange={(newValue) => onValueChange(newValue ?? null)}
+    >
       <SelectTrigger className="w-full h-10! text-base ps-4! pe-3! rounded-xl border-0 bg-neutral-200/50">
-        <SelectValue />
+        <SelectValue placeholder="Select a category" />
       </SelectTrigger>
       <SelectContent className="ring-0 shadow-xl shadow-neutral-900/5 bg-neutral-50">
-        {items.map((item) => (
+        {categories.map((category) => (
           <SelectItem
             className="text-base h-10 rounded-none px-4 focus:bg-neutral-200/50"
-            key={item.value}
-            value={item.value}
+            key={category.id}
+            value={category.id}
           >
-            {item.label}
+            {category.name}
           </SelectItem>
         ))}
       </SelectContent>

@@ -19,6 +19,14 @@ export default function EditExpenseModal({
 }: Props) {
   const [category, setCategory] = useState<number | null>(null);
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [saveError, setSaveError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const handleEdit = async () => {};
+
+  const handleDelete = async () => {};
 
   return (
     <div className="w-screen h-screen fixed top-0 left-0 z-10 flex items-center justify-center p-7 bg-neutral-900/5">
@@ -69,11 +77,19 @@ export default function EditExpenseModal({
           </div>
         </div>
         <div className="w-full h-fit flex flex-wrap justify-end p-4 pt-0 gap-2">
-          <button className="w-fit h-10 rounded-xl px-5 text-indigo-500 bg-indigo-100">
-            Save
+          <button
+            disabled={saveLoading}
+            onClick={handleEdit}
+            className="w-fit h-10 disabled:opacity-50 rounded-xl px-5 text-indigo-500 bg-indigo-100"
+          >
+            {saveLoading ? "Saving..." : "Save"}
           </button>
-          <button className="w-fit h-10 rounded-xl px-5 text-red-500 bg-red-100">
-            Delete
+          <button
+            disabled={deleteLoading}
+            onClick={handleDelete}
+            className="w-fit h-10 disabled:opacity-50 rounded-xl px-5 text-red-500 bg-red-100"
+          >
+            {deleteLoading ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>

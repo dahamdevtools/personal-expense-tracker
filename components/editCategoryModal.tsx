@@ -1,12 +1,8 @@
 "use client";
 
+import { Category } from "@/types";
 import { useState } from "react";
 import { LuX } from "react-icons/lu";
-
-interface Category {
-  id: number;
-  name: string;
-}
 
 interface Props {
   category: Category;

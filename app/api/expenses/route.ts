@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 export async function GET() {
   try {
     const [rows] = await pool.query(
-      "SELECT expenses.id, amount, description, date, name as category FROM expenses INNER JOIN categories ON expenses.category_id = categories.id ORDER BY date DESC",
+      "SELECT expenses.id, amount, description, date, category_id, name as category FROM expenses INNER JOIN categories ON expenses.category_id = categories.id ORDER BY date DESC",
     );
     return Response.json(rows);
   } catch (error: any) {

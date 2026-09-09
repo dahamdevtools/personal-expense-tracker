@@ -2,8 +2,12 @@ import pool from "@/lib/db";
 import { format } from "date-fns";
 import { NextRequest } from "next/server";
 
-export async function PUT(req: NextRequest) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: number }> },
+) {
   try {
+    const { id } = await params;
     const body = await req.json();
     const { user_id, category_id, amount, description, date } = body;
     const formattedDate = format(new Date(date), "yyyy-MM-dd HH:mm:ss");
@@ -16,8 +20,8 @@ export async function PUT(req: NextRequest) {
     }
 
     await pool.query(
-      "UPDATE expenses SET (amount, description, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)",
-      [amount, description, formattedDate, category_id, user_id],
+      "UPDATE expenses SET amount = ?, description = ?, date = ?, category_id = ?, user_id = ? WHERE id = ?",
+      [amount, description, formattedDate, category_id, user_id, id],
     );
 
     return Response.json(
@@ -27,6 +31,24 @@ export async function PUT(req: NextRequest) {
   } catch (error: any) {
     return Response.json(
       { error: "Failed to update expense: " + error.message },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+
+    await pool.query("DELETE FROM expenses WHERE id = ?", [id]);
+
+    return Response.json({ message: "Expense deleted successfully" });
+  } catch (error: any) {
+    return Response.json(
+      { error: "Failed to delete expense: " + error.message },
       { status: 500 },
     );
   }

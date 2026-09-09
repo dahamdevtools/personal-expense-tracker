@@ -2,15 +2,37 @@
 
 import AddIncomeModal from "@/components/addIncomeModal";
 import EditIncomeModal from "@/components/editIncomeModal";
-import { useState } from "react";
+import type { Income } from "@/types";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 
 export default function Income() {
+  const [income, setIncome] = useState<Income[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
-  const [selectedIncome, setSelectedIncome] = useState<null | number>(null);
+  const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
+
+  const fetchIncome = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/income");
+      const data = await res.json();
+      setIncome(data);
+    } catch (error) {
+      console.error("Failed to fetch income", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchIncome();
+  }, []);
 
   return (
-    <div className="w-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
+    <div className="w- h-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
       <div className="w-full h-fit flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl">Income History</h1>
         <div className="w-fit h-fit flex flex-wrap items-center gap-2">
@@ -30,50 +52,63 @@ export default function Income() {
         </div>
       </div>
 
-      <table className="bg-neutral-50 rounded-2xl overflow-hidden">
-        <thead>
-          <tr className="bg-neutral-200">
-            <th className="font-normal text-start p-3 px-5">Date</th>
-            <th className="font-normal text-start p-3 px-5">Category</th>
-            <th className="font-normal text-start p-3 px-5">Description</th>
-            <th className="font-normal text-start p-3 px-5">Amount</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-neutral-200">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <tr
-              className="cursor-pointer"
-              key={index}
-              onClick={() => setSelectedIncome(index)}
-            >
-              <td className="p-3 px-5">2026.09.01</td>
-              <td className="p-3 px-5">Freelancing</td>
-              <td className="p-3 px-5">
-                <p className="text-ellipsis line-clamp-1">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Excepturi delectus in soluta ullam repellat totam molestias
-                  sapiente maiores facilis quasi voluptas id ex corporis
-                  deleniti dolor provident eveniet, omnis quos?
-                </p>
-              </td>
-              <td className="p-2 ps-5">
-                <span className="w-fit h-fit flex gap-1 px-4 py-1 rounded-lg bg-green-100 text-green-400">
-                  <span>+</span>
-                  <span>$600</span>
-                </span>
-              </td>
+      {loading ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>Loading...</p>
+        </div>
+      ) : income.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No income yet.</p>
+        </div>
+      ) : (
+        <table className="bg-neutral-50 rounded-2xl overflow-hidden">
+          <thead>
+            <tr className="bg-neutral-200">
+              <th className="font-normal text-start p-3 px-5">Date</th>
+              <th className="font-normal text-start p-3 px-5">Category</th>
+              <th className="font-normal text-start p-3 px-5">Description</th>
+              <th className="font-normal text-start p-3 px-5">Amount</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-neutral-200">
+            {income.map((inc) => (
+              <tr
+                className="cursor-pointer"
+                key={inc.id}
+                onClick={() => setSelectedIncome(inc)}
+              >
+                <td className="p-3 px-5">
+                  {format(new Date(inc.date), "MMM dd, yyyy")}
+                </td>
+                <td className="p-3 px-5">{inc.category}</td>
+                <td className="p-3 px-5">
+                  <p className="text-ellipsis line-clamp-1">
+                    {inc.description}
+                  </p>
+                </td>
+                <td className="p-2 ps-5">
+                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
+                    <span>-</span>
+                    <span>LKR {inc.amount}</span>
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {isAddIncomeModalOpen && (
-        <AddIncomeModal onClose={() => setIsAddIncomeModalOpen(false)} />
+        <AddIncomeModal
+          onClose={() => setIsAddIncomeModalOpen(false)}
+          onSuccess={fetchIncome}
+        />
       )}
       {selectedIncome !== null && (
         <EditIncomeModal
-          id={selectedIncome}
+          income={selectedIncome}
           onClose={() => setSelectedIncome(null)}
+          onSuccess={fetchIncome}
         />
       )}
     </div>

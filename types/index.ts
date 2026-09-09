@@ -11,3 +11,12 @@ export type Expense = {
   description: string;
   amount: string;
 };
+
+export type Income = {
+  id: number;
+  date: string;
+  category: string;
+  category_id: number;
+  description: string;
+  amount: string;
+};

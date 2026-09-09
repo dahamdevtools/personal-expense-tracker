@@ -17,16 +17,76 @@ export default function EditExpenseModal({
   expense,
   onSuccess,
 }: Props) {
-  const [category, setCategory] = useState<number | null>(null);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [category, setCategory] = useState<number | null>(expense.category_id);
+  const [date, setDate] = useState<Date | undefined>(new Date(expense.date));
+  const [amount, setAmount] = useState(expense.amount);
+  const [description, setDescription] = useState(expense.description);
   const [saveError, setSaveError] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const handleEdit = async () => {};
+  const handleSave = async () => {
+    setSaveError("");
+    setDeleteError("");
+    setSaveLoading(true);
 
-  const handleDelete = async () => {};
+    try {
+      const res = await fetch(`/api/expenses/${expense.id}`, {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          user_id: 2,
+          category_id: category,
+          amount: Math.floor(parseFloat(amount) * 100) / 100,
+          description,
+          date,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setSaveError(data.error);
+        setSaveLoading(false);
+        return;
+      }
+
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update expense", error);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleteError("");
+    setSaveError("");
+    setDeleteLoading(true);
+
+    try {
+      const res = await fetch(`/api/expenses/${expense.id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setDeleteError(data.error);
+        setDeleteLoading(false);
+        return;
+      }
+
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to delete expense", error);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
 
   return (
     <div className="w-screen h-screen fixed top-0 left-0 z-10 flex items-center justify-center p-7 bg-neutral-900/5">
@@ -58,6 +118,8 @@ export default function EditExpenseModal({
                 spellCheck="false"
                 className="w-full h-10 rounded-xl px-4 truncate bg-neutral-200/50"
                 placeholder="Amount..."
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </div>
           </div>
@@ -69,17 +131,21 @@ export default function EditExpenseModal({
               rows={2}
               spellCheck="false"
               className="w-full rounded-xl px-4 py-3 resize-none bg-neutral-200/50"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
           <div className="w-full h-fit flex flex-col gap-1">
             <label htmlFor="date">Date</label>
             <DatePicker date={date} onDateChange={setDate} />
           </div>
+          {saveError && <p className="text-red-400">{saveError}</p>}
+          {deleteError && <p className="text-red-400">{deleteError}</p>}
         </div>
         <div className="w-full h-fit flex flex-wrap justify-end p-4 pt-0 gap-2">
           <button
             disabled={saveLoading}
-            onClick={handleEdit}
+            onClick={handleSave}
             className="w-fit h-10 disabled:opacity-50 rounded-xl px-5 text-indigo-500 bg-indigo-100"
           >
             {saveLoading ? "Saving..." : "Save"}

@@ -87,7 +87,7 @@ export default function Income() {
                   </p>
                 </td>
                 <td className="p-2 ps-5">
-                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-400">
+                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
                     <span>+</span>
                     <span>LKR {inc.amount}</span>
                   </span>

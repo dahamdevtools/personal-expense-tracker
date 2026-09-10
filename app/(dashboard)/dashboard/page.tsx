@@ -81,7 +81,9 @@ export default function Dashboard() {
             </p>
             <div className="font-semibold flex flex-wrap gap-2 items-end">
               <span className="text-neutral-400">LKR</span>
-              <span className="text-3xl text-ellipsis line-clamp-1">
+              <span
+                className={`${totalIncome - totalExpense > 0 ? "text-green-500" : "text-red-400"} text-3xl text-ellipsis line-clamp-1`}
+              >
                 {(totalIncome - totalExpense).toFixed(2)}
               </span>
             </div>
@@ -150,25 +152,27 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-200">
-            {income.map((inc) => (
-              <tr key={inc.id}>
-                <td className="p-3 px-5">
-                  {format(new Date(inc.date), "MMM dd, yyyy")}
-                </td>
-                <td className="p-3 px-5">{inc.category}</td>
-                <td className="p-3 px-5">
-                  <p className="text-ellipsis line-clamp-1">
-                    {inc.description}
-                  </p>
-                </td>
-                <td className="p-2 ps-5">
-                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-400">
-                    <span>+</span>
-                    <span>LKR {inc.amount}</span>
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {income
+              .map((inc) => (
+                <tr key={inc.id}>
+                  <td className="p-3 px-5">
+                    {format(new Date(inc.date), "MMM dd, yyyy")}
+                  </td>
+                  <td className="p-3 px-5">{inc.category}</td>
+                  <td className="p-3 px-5">
+                    <p className="text-ellipsis line-clamp-1">
+                      {inc.description}
+                    </p>
+                  </td>
+                  <td className="p-2 ps-5">
+                    <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
+                      <span>+</span>
+                      <span>LKR {inc.amount}</span>
+                    </span>
+                  </td>
+                </tr>
+              ))
+              .slice(0, 10)}
           </tbody>
         </table>
       )}
@@ -202,25 +206,27 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-200">
-            {expenses.map((expense) => (
-              <tr key={expense.id}>
-                <td className="p-3 px-5">
-                  {format(new Date(expense.date), "MMM dd, yyyy")}
-                </td>
-                <td className="p-3 px-5">{expense.category}</td>
-                <td className="p-3 px-5">
-                  <p className="text-ellipsis line-clamp-1">
-                    {expense.description}
-                  </p>
-                </td>
-                <td className="p-2 ps-5">
-                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
-                    <span>-</span>
-                    <span>LKR {expense.amount}</span>
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {expenses
+              .map((expense) => (
+                <tr key={expense.id}>
+                  <td className="p-3 px-5">
+                    {format(new Date(expense.date), "MMM dd, yyyy")}
+                  </td>
+                  <td className="p-3 px-5">{expense.category}</td>
+                  <td className="p-3 px-5">
+                    <p className="text-ellipsis line-clamp-1">
+                      {expense.description}
+                    </p>
+                  </td>
+                  <td className="p-2 ps-5">
+                    <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
+                      <span>-</span>
+                      <span>LKR {expense.amount}</span>
+                    </span>
+                  </td>
+                </tr>
+              ))
+              .slice(0, 10)}
           </tbody>
         </table>
       )}

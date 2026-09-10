@@ -12,6 +12,7 @@ export default function Income() {
   const [loading, setLoading] = useState(false);
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
   const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchIncome = async () => {
     setLoading(true);
@@ -27,6 +28,16 @@ export default function Income() {
     }
   };
 
+  const filteredIncome = income.filter((inc) => {
+    const term = searchTerm.toLocaleLowerCase();
+    const date = format(new Date(inc.date), "MMM dd, yyyy");
+    return (
+      inc.description.toLowerCase().includes(term) ||
+      inc.category.toLowerCase().includes(term) ||
+      date.toLowerCase().includes(term)
+    );
+  });
+
   useEffect(() => {
     fetchIncome();
   }, []);
@@ -41,6 +52,8 @@ export default function Income() {
             spellCheck="false"
             placeholder="Search Income..."
             className="w-full sm:max-w-64 h-10 rounded-xl px-4 truncate bg-neutral-200"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
             onClick={() => setIsAddIncomeModalOpen(true)}
@@ -60,6 +73,10 @@ export default function Income() {
         <div className="w-full h-full p-7 text-lg flex items-center justify-center">
           <p>No income yet.</p>
         </div>
+      ) : filteredIncome.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No expense found.</p>
+        </div>
       ) : (
         <table className="bg-neutral-50 rounded-2xl overflow-hidden">
           <thead>
@@ -71,7 +88,7 @@ export default function Income() {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-200">
-            {income.map((inc) => (
+            {filteredIncome.map((inc) => (
               <tr
                 className="cursor-pointer"
                 key={inc.id}

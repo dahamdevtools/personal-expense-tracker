@@ -12,6 +12,7 @@ export default function Expenses() {
   const [loading, setLoading] = useState(false);
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchExpenses = async () => {
     setLoading(true);
@@ -27,6 +28,16 @@ export default function Expenses() {
     }
   };
 
+  const filteredExpenses = expenses.filter((expense) => {
+    const term = searchTerm.toLocaleLowerCase();
+    const date = format(new Date(expense.date), "MMM dd, yyyy");
+    return (
+      expense.description.toLowerCase().includes(term) ||
+      expense.category.toLowerCase().includes(term) ||
+      date.toLowerCase().includes(term)
+    );
+  });
+
   useEffect(() => {
     fetchExpenses();
   }, []);
@@ -41,6 +52,8 @@ export default function Expenses() {
             spellCheck="false"
             placeholder="Search Expenses..."
             className="w-full sm:max-w-64 h-10 rounded-xl px-4 truncate bg-neutral-200"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
             onClick={() => setIsAddExpenseModalOpen(true)}
@@ -60,6 +73,10 @@ export default function Expenses() {
         <div className="w-full h-full p-7 text-lg flex items-center justify-center">
           <p>No expense yet.</p>
         </div>
+      ) : filteredExpenses.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No expense found.</p>
+        </div>
       ) : (
         <table className="bg-neutral-50 rounded-2xl overflow-hidden">
           <thead>
@@ -71,7 +88,7 @@ export default function Expenses() {
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-200">
-            {expenses.map((expense) => (
+            {filteredExpenses.map((expense) => (
               <tr
                 className="cursor-pointer"
                 key={expense.id}

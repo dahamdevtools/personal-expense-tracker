@@ -2,6 +2,7 @@
 
 import AddIncomeModal from "@/components/addIncomeModal";
 import EditIncomeModal from "@/components/editIncomeModal";
+import { SessionPayload } from "@/lib/auth";
 import type { Income } from "@/types";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -13,6 +14,18 @@ export default function Income() {
   const [isAddIncomeModalOpen, setIsAddIncomeModalOpen] = useState(false);
   const [selectedIncome, setSelectedIncome] = useState<Income | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState<SessionPayload | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("api/auth/me");
+      if (!res.ok) return;
+      const data = await res.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Failed to fetch user", error);
+    }
+  };
 
   const fetchIncome = async () => {
     setLoading(true);
@@ -39,6 +52,7 @@ export default function Income() {
   });
 
   useEffect(() => {
+    fetchUser();
     fetchIncome();
   }, []);
 
@@ -106,7 +120,9 @@ export default function Income() {
                 <td className="p-2 ps-5">
                   <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
                     <span>+</span>
-                    <span>LKR {inc.amount}</span>
+                    <span>
+                      {user?.currency} {inc.amount}
+                    </span>
                   </span>
                 </td>
               </tr>

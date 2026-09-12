@@ -1,5 +1,6 @@
 "use client";
 
+import { SessionPayload } from "@/lib/auth";
 import { Expense, Income } from "@/types";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -16,9 +17,21 @@ export default function Dashboard() {
   const [income, setIncome] = useState<Income[]>([]);
   const [expenseLoading, setExpenseLoading] = useState(false);
   const [incomeLoading, setIncomeLoading] = useState(false);
+  const [user, setUser] = useState<SessionPayload | null>(null);
 
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpenses] = useState(0);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("api/auth/me");
+      if (!res.ok) return;
+      const data = await res.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Failed to fetch user", error);
+    }
+  };
 
   const fetchExpenses = async () => {
     setExpenseLoading(true);
@@ -63,6 +76,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    fetchUser();
     fetchExpenses();
     fetchIncome();
   }, []);
@@ -80,7 +94,7 @@ export default function Dashboard() {
               Total Balance
             </p>
             <div className="font-semibold flex flex-wrap gap-2 items-end">
-              <span className="text-neutral-400">LKR</span>
+              <span className="text-neutral-400">{user?.currency}</span>
               <span
                 className={`${totalIncome - totalExpense > 0 ? "text-green-500" : "text-red-400"} text-3xl text-ellipsis line-clamp-1`}
               >
@@ -98,7 +112,7 @@ export default function Dashboard() {
               Total Income
             </p>
             <div className="font-semibold flex flex-wrap gap-2 items-end">
-              <span className="text-neutral-400">LKR</span>
+              <span className="text-neutral-400">{user?.currency}</span>
               <span className="text-3xl text-ellipsis line-clamp-1">
                 {totalIncome.toFixed(2)}
               </span>
@@ -114,7 +128,7 @@ export default function Dashboard() {
               Total Expenses
             </p>
             <div className="font-semibold flex flex-wrap gap-2 items-end">
-              <span className="text-neutral-400">LKR</span>
+              <span className="text-neutral-400">{user?.currency}</span>
               <span className="text-3xl text-ellipsis line-clamp-1">
                 {totalExpense.toFixed(2)}
               </span>
@@ -167,7 +181,9 @@ export default function Dashboard() {
                   <td className="p-2 ps-5">
                     <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
                       <span>+</span>
-                      <span>LKR {inc.amount}</span>
+                      <span>
+                        {user?.currency} {inc.amount}
+                      </span>
                     </span>
                   </td>
                 </tr>
@@ -221,7 +237,9 @@ export default function Dashboard() {
                   <td className="p-2 ps-5">
                     <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
                       <span>-</span>
-                      <span>LKR {expense.amount}</span>
+                      <span>
+                        {user?.currency} {expense.amount}
+                      </span>
                     </span>
                   </td>
                 </tr>

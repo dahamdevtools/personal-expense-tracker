@@ -2,6 +2,7 @@
 
 import AddExpenseModal from "@/components/addExpenseModal";
 import EditExpenseModal from "@/components/editExpenseModal";
+import { SessionPayload } from "@/lib/auth";
 import { Expense } from "@/types";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
@@ -13,6 +14,18 @@ export default function Expenses() {
   const [isAddExpenseModalOpen, setIsAddExpenseModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState<SessionPayload | null>(null);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("api/auth/me");
+      if (!res.ok) return;
+      const data = await res.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Failed to fetch user", error);
+    }
+  };
 
   const fetchExpenses = async () => {
     setLoading(true);
@@ -39,6 +52,7 @@ export default function Expenses() {
   });
 
   useEffect(() => {
+    fetchUser();
     fetchExpenses();
   }, []);
 
@@ -106,7 +120,9 @@ export default function Expenses() {
                 <td className="p-2 ps-5">
                   <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
                     <span>-</span>
-                    <span>LKR {expense.amount}</span>
+                    <span>
+                      {user?.currency} {expense.amount}
+                    </span>
                   </span>
                 </td>
               </tr>

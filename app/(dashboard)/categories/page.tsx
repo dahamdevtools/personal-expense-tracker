@@ -76,7 +76,7 @@ export default function Categories() {
           <p>No categories found.</p>
         </div>
       ) : (
-        <div className="w-full h-full flex flex-wrap gap-2">
+        <div className="w-full h-fit flex flex-wrap gap-2">
           {filteredCategories.map((category) => (
             <button
               key={category.id}

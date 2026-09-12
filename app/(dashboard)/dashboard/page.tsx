@@ -82,7 +82,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
+    <div className="w-full min-h-0 min-w-0 flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
       <h1 className="text-xl">Dashboard</h1>
       <div className="w-full h-fit grid grid-cols-1 md:grid-cols-3 gap-3.5">
         <div className="w-full h-fit flex items-center p-6 gap-6 rounded-2xl bg-neutral-50">
@@ -156,41 +156,47 @@ export default function Dashboard() {
           <p>No income yet.</p>
         </div>
       ) : (
-        <table className="bg-neutral-50 rounded-2xl overflow-hidden">
-          <thead>
-            <tr className="bg-neutral-200">
-              <th className="font-normal text-start p-3 px-5">Date</th>
-              <th className="font-normal text-start p-3 px-5">Category</th>
-              <th className="font-normal text-start p-3 px-5">Description</th>
-              <th className="font-normal text-start p-3 px-5">Amount</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {income
-              .map((inc) => (
-                <tr key={inc.id}>
-                  <td className="p-3 px-5">
-                    {format(new Date(inc.date), "MMM dd, yyyy")}
-                  </td>
-                  <td className="p-3 px-5">{inc.category}</td>
-                  <td className="p-3 px-5">
-                    <p className="text-ellipsis line-clamp-1">
-                      {inc.description}
-                    </p>
-                  </td>
-                  <td className="p-2 ps-5">
-                    <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
-                      <span>+</span>
-                      <span>
-                        {user?.currency} {inc.amount}
+        <div className="w-full shrink-0 overflow-auto rounded-2xl">
+          <table className="min-w-full bg-neutral-50">
+            <thead>
+              <tr className="bg-neutral-200">
+                <th className="font-normal text-start p-3 px-5">Date</th>
+                <th className="font-normal text-start p-3 px-5">Category</th>
+                <th className="font-normal text-start p-3 px-5">Description</th>
+                <th className="font-normal text-start p-3 px-5">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-200">
+              {income
+                .map((inc) => (
+                  <tr key={inc.id}>
+                    <td className="p-3 px-5 text-nowrap">
+                      {format(new Date(inc.date), "MMM dd, yyyy")}
+                    </td>
+                    <td className="p-3 px-5">
+                      <p className="text-ellipsis line-clamp-2">
+                        {inc.category}
+                      </p>
+                    </td>
+                    <td className="p-3 px-5">
+                      <p className="text-ellipsis line-clamp-2">
+                        {inc.description}
+                      </p>
+                    </td>
+                    <td className="p-2 ps-5 text-nowrap">
+                      <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-green-100 text-green-500">
+                        <span>+</span>
+                        <span>
+                          {user?.currency} {inc.amount}
+                        </span>
                       </span>
-                    </span>
-                  </td>
-                </tr>
-              ))
-              .slice(0, 10)}
-          </tbody>
-        </table>
+                    </td>
+                  </tr>
+                ))
+                .slice(0, 10)}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="w-full h-fit flex items-center justify-between gap-6">
@@ -212,41 +218,47 @@ export default function Dashboard() {
           <p>No expense yet.</p>
         </div>
       ) : (
-        <table className="bg-neutral-50 rounded-2xl overflow-hidden">
-          <thead>
-            <tr className="bg-neutral-200">
-              <th className="font-normal text-start p-3 px-5">Date</th>
-              <th className="font-normal text-start p-3 px-5">Category</th>
-              <th className="font-normal text-start p-3 px-5">Description</th>
-              <th className="font-normal text-start p-3 px-5">Amount</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {expenses
-              .map((expense) => (
-                <tr key={expense.id}>
-                  <td className="p-3 px-5">
-                    {format(new Date(expense.date), "MMM dd, yyyy")}
-                  </td>
-                  <td className="p-3 px-5">{expense.category}</td>
-                  <td className="p-3 px-5">
-                    <p className="text-ellipsis line-clamp-1">
-                      {expense.description}
-                    </p>
-                  </td>
-                  <td className="p-2 ps-5">
-                    <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
-                      <span>-</span>
-                      <span>
-                        {user?.currency} {expense.amount}
+        <div className="w-full shrink-0 overflow-x-auto rounded-2xl">
+          <table className="min-w-full bg-neutral-50">
+            <thead>
+              <tr className="bg-neutral-200">
+                <th className="font-normal text-start p-3 px-5">Date</th>
+                <th className="font-normal text-start p-3 px-5">Category</th>
+                <th className="font-normal text-start p-3 px-5">Description</th>
+                <th className="font-normal text-start p-3 px-5">Amount</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-200">
+              {expenses
+                .map((expense) => (
+                  <tr key={expense.id}>
+                    <td className="p-3 px-5 text-nowrap">
+                      {format(new Date(expense.date), "MMM dd, yyyy")}
+                    </td>
+                    <td className="p-3 px-5">
+                      <p className="text-ellipsis line-clamp-2">
+                        {expense.category}
+                      </p>
+                    </td>
+                    <td className="p-3 px-5">
+                      <p className="text-ellipsis line-clamp-2">
+                        {expense.description}
+                      </p>
+                    </td>
+                    <td className="p-2 ps-5 text-nowrap">
+                      <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
+                        <span>-</span>
+                        <span>
+                          {user?.currency} {expense.amount}
+                        </span>
                       </span>
-                    </span>
-                  </td>
-                </tr>
-              ))
-              .slice(0, 10)}
-          </tbody>
-        </table>
+                    </td>
+                  </tr>
+                ))
+                .slice(0, 10)}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

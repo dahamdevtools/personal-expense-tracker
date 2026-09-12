@@ -57,7 +57,7 @@ export default function Expenses() {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
+    <div className="w-full min-w-0 h-full min-h-0 flex flex-col gap-7 p-3.5 pt-7">
       <div className="w-full h-fit flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl">Expenses</h1>
         <div className="w-fit h-fit flex flex-wrap items-center gap-2">
@@ -92,43 +92,49 @@ export default function Expenses() {
           <p>No expense found.</p>
         </div>
       ) : (
-        <table className="bg-neutral-50 rounded-2xl overflow-hidden">
-          <thead>
-            <tr className="bg-neutral-200">
-              <th className="font-normal text-start p-3 px-5">Date</th>
-              <th className="font-normal text-start p-3 px-5">Category</th>
-              <th className="font-normal text-start p-3 px-5">Description</th>
-              <th className="font-normal text-start p-3 px-5">Amount</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-200">
-            {filteredExpenses.map((expense) => (
-              <tr
-                className="cursor-pointer"
-                key={expense.id}
-                onClick={() => setSelectedExpense(expense)}
-              >
-                <td className="p-3 px-5">
-                  {format(new Date(expense.date), "MMM dd, yyyy")}
-                </td>
-                <td className="p-3 px-5">{expense.category}</td>
-                <td className="p-3 px-5">
-                  <p className="text-ellipsis line-clamp-1">
-                    {expense.description}
-                  </p>
-                </td>
-                <td className="p-2 ps-5">
-                  <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
-                    <span>-</span>
-                    <span>
-                      {user?.currency} {expense.amount}
-                    </span>
-                  </span>
-                </td>
+        <div className="w-full min-h-0 flex-1 overflow-auto rounded-2xl">
+          <table className="min-w-full bg-neutral-50">
+            <thead>
+              <tr className="bg-neutral-200">
+                <th className="font-normal text-start p-3 px-5">Date</th>
+                <th className="font-normal text-start p-3 px-5">Category</th>
+                <th className="font-normal text-start p-3 px-5">Description</th>
+                <th className="font-normal text-start p-3 px-5">Amount</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-neutral-200">
+              {filteredExpenses.map((expense) => (
+                <tr
+                  className="cursor-pointer"
+                  key={expense.id}
+                  onClick={() => setSelectedExpense(expense)}
+                >
+                  <td className="p-3 px-5 text-nowrap">
+                    {format(new Date(expense.date), "MMM dd, yyyy")}
+                  </td>
+                  <td className="p-3 px-5">
+                    <p className="text-ellipsis line-clamp-2">
+                      {expense.category}
+                    </p>
+                  </td>
+                  <td className="p-3 px-5">
+                    <p className="text-ellipsis line-clamp-2">
+                      {expense.description}
+                    </p>
+                  </td>
+                  <td className="p-2 ps-5 text-nowrap">
+                    <span className="w-fit h-fit flex gap-1 flex-nowrap px-4 py-1 rounded-lg bg-red-100 text-red-400">
+                      <span>-</span>
+                      <span>
+                        {user?.currency} {expense.amount}
+                      </span>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {isAddExpenseModalOpen && (

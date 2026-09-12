@@ -50,6 +50,10 @@ html {
   background: var(--color-neutral-400);
 }
 
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 button {
   cursor: pointer;
 }

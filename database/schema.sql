@@ -33,7 +33,14 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `expense_tracker`.`categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_categories_users1_idx` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `fk_categories_users1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `expense_tracker`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

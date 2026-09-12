@@ -2,7 +2,8 @@
 
 import { NavItemTypes } from "@/types/navigation";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   LuArrowLeft,
   LuHandCoins,
@@ -20,6 +21,20 @@ const NavItems: NavItemTypes[] = [
 
 export default function SideMenu() {
   const pathName = usePathname();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setLoading(true);
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to log out", error);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-72 h-screen hidden lg:flex overflow-hidden py-3.5">
@@ -43,9 +58,13 @@ export default function SideMenu() {
         </div>
         <div className="w-full h-fit px-3.5 flex">
           <div className="w-full h-fit flex items-center justify-center py-4 border-t border-neutral-200">
-            <button className="w-full h-12 rounded-xl flex items-center px-4 gap-2 duration-200 hover:bg-neutral-200/50">
+            <button
+              onClick={handleLogout}
+              disabled={loading}
+              className="w-full h-12 disabled:opacity-50 rounded-xl flex items-center px-4 gap-2 duration-200 hover:bg-neutral-200/50"
+            >
               <LuArrowLeft className="text-lg" />
-              <span>Log Out</span>
+              <span>{loading ? "Logging out..." : "Log out"}</span>
             </button>
           </div>
         </div>

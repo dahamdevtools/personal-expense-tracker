@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const [rows] = await pool.query(
-      "SELECT income.id, amount, description, date, category_id, name as category FROM income INNER JOIN categories ON income.category_id = categories.id WHERE user_id = ? ORDER BY date DESC",
+      "SELECT income.id, amount, description, date, category_id, name as category FROM income INNER JOIN categories ON income.category_id = categories.id WHERE income.user_id = ? ORDER BY date DESC",
       [session.userId],
     );
     return Response.json(rows);

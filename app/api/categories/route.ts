@@ -57,10 +57,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await pool.query(
-      "INSERT INTO categories (name) VALUES (?) WHERE user_id = ?",
-      [name, session.userId],
-    );
+    await pool.query("INSERT INTO categories (name, user_id) VALUES (?, ?)", [
+      name,
+      session.userId,
+    ]);
 
     return Response.json(
       { message: "Category created successfully" },

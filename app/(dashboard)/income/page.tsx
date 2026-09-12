@@ -75,7 +75,7 @@ export default function Income() {
         </div>
       ) : filteredIncome.length === 0 ? (
         <div className="w-full h-full p-7 text-lg flex items-center justify-center">
-          <p>No expense found.</p>
+          <p>No income found.</p>
         </div>
       ) : (
         <table className="bg-neutral-50 rounded-2xl overflow-hidden">

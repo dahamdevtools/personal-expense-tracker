@@ -17,6 +17,7 @@ export default function Categories() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null,
   );
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -30,6 +31,11 @@ export default function Categories() {
       setLoading(false);
     }
   };
+
+  const filteredCategories = categories.filter((category) => {
+    const term = searchTerm.toLocaleLowerCase();
+    return category.name.toLowerCase().includes(term);
+  });
 
   useEffect(() => {
     fetchCategories();
@@ -45,6 +51,8 @@ export default function Categories() {
             spellCheck="false"
             placeholder="Search Category..."
             className="w-full sm:max-w-64 h-10 rounded-xl px-4 truncate bg-neutral-200"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
             onClick={() => setIsAddCategoryModalOpen(true)}
@@ -63,9 +71,13 @@ export default function Categories() {
         <div className="w-full h-full p-7 text-lg flex items-center justify-center">
           <p>No categories yet.</p>
         </div>
+      ) : filteredCategories.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No categories found.</p>
+        </div>
       ) : (
         <div className="w-full h-full flex flex-wrap gap-2">
-          {categories.map((category) => (
+          {filteredCategories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category)}

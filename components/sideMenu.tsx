@@ -9,6 +9,7 @@ import {
   LuHandCoins,
   LuLayers,
   LuSquareStack,
+  LuUser,
   LuWallet,
 } from "react-icons/lu";
 
@@ -17,6 +18,7 @@ const NavItems: NavItemTypes[] = [
   { route: "/expenses", label: "Expenses", icon: <LuHandCoins /> },
   { route: "/income", label: "Income", icon: <LuWallet /> },
   { route: "/categories", label: "Categories", icon: <LuSquareStack /> },
+  { route: "/profile", label: "Profile", icon: <LuUser /> },
 ];
 
 export default function SideMenu() {

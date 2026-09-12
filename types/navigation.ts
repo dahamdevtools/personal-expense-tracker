@@ -4,7 +4,8 @@ export type DashboardRoutesTypes =
   | "/dashboard"
   | "/expenses"
   | "/income"
-  | "/categories";
+  | "/categories"
+  | "/profile";
 
 export type NavItemTypes = {
   route: DashboardRoutesTypes;

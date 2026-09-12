@@ -1,10 +1,19 @@
+import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
 import { RowDataPacket } from "mysql2";
 import { NextRequest } from "next/server";
 
 export async function GET() {
   try {
-    const [rows] = await pool.query("SELECT * FROM categories ORDER BY name");
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
+    const [rows] = await pool.query(
+      "SELECT * FROM categories WHERE user_id = ? ORDER BY name",
+      [session.userId],
+    );
     return Response.json(rows);
   } catch (error: any) {
     return Response.json(
@@ -16,6 +25,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const body = await req.json();
     const { name } = body;
 
@@ -32,8 +46,8 @@ export async function POST(req: NextRequest) {
     }
 
     const [rows] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM categories WHERE name = ?",
-      [name],
+      "SELECT * FROM categories WHERE name = ? AND user_id = ?",
+      [name, session.userId],
     );
 
     if (rows.length > 0) {
@@ -43,7 +57,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await pool.query("INSERT INTO categories (name) VALUES (?)", [name]);
+    await pool.query(
+      "INSERT INTO categories (name) VALUES (?) WHERE user_id = ?",
+      [name, session.userId],
+    );
 
     return Response.json(
       { message: "Category created successfully" },

@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
 import { RowDataPacket } from "mysql2";
 import { NextRequest } from "next/server";
@@ -7,6 +8,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const { id } = await params;
     const body = await req.json();
     const { name } = body;
@@ -35,7 +41,14 @@ export async function PUT(
       );
     }
 
-    await pool.query("UPDATE categories SET name = ? WHERE id = ?", [name, id]);
+    const [result]: any = await pool.query(
+      "UPDATE categories SET name = ? WHERE id = ? AND user_id = ?",
+      [name, id, session.userId],
+    );
+
+    if (result.affectedRows === 0) {
+      return Response.json({ error: "Category not found." }, { status: 404 });
+    }
 
     return Response.json({ message: "Category updated successfully" });
   } catch (error: any) {
@@ -51,9 +64,21 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const { id } = await params;
 
-    await pool.query("DELETE FROM categories WHERE id = ?", [id]);
+    const [rows]: any = await pool.query(
+      "DELETE FROM categories WHERE id = ? AND user_id = ?",
+      [id, session.userId],
+    );
+
+    if (rows.affectedRows === 0) {
+      return Response.json({ error: "Category not found." }, { status: 404 });
+    }
 
     return Response.json({ message: "Category deleted successfully" });
   } catch (error: any) {

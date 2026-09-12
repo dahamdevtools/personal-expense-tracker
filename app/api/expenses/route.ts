@@ -1,11 +1,18 @@
+import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
 import { format } from "date-fns";
 import { NextRequest } from "next/server";
 
 export async function GET() {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const [rows] = await pool.query(
-      "SELECT expenses.id, amount, description, date, category_id, name as category FROM expenses INNER JOIN categories ON expenses.category_id = categories.id ORDER BY date DESC",
+      "SELECT expenses.id, amount, description, date, category_id, name as category FROM expenses INNER JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? ORDER BY date DESC",
+      [session.userId],
     );
     return Response.json(rows);
   } catch (error: any) {
@@ -18,8 +25,13 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const body = await req.json();
-    const { user_id, category_id, amount, description, date } = body;
+    const { category_id, amount, description, date } = body;
     const formattedDate = format(new Date(date), "yyyy-MM-dd HH:mm:ss");
 
     if (!category_id || !amount || !amount || !date) {
@@ -31,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     await pool.query(
       "INSERT INTO expenses (amount, description, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)",
-      [amount, description, formattedDate, category_id, user_id],
+      [amount, description, formattedDate, category_id, session.userId],
     );
 
     return Response.json(

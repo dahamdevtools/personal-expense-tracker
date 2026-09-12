@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
 import { format } from "date-fns";
 import { NextRequest } from "next/server";
@@ -7,9 +8,14 @@ export async function PUT(
   { params }: { params: Promise<{ id: number }> },
 ) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const { id } = await params;
     const body = await req.json();
-    const { user_id, category_id, amount, description, date } = body;
+    const { category_id, amount, description, date } = body;
     const formattedDate = format(new Date(date), "yyyy-MM-dd HH:mm:ss");
 
     if (!category_id || !amount || !amount || !date) {
@@ -19,10 +25,14 @@ export async function PUT(
       );
     }
 
-    await pool.query(
-      "UPDATE expenses SET amount = ?, description = ?, date = ?, category_id = ?, user_id = ? WHERE id = ?",
-      [amount, description, formattedDate, category_id, user_id, id],
+    const [rows]: any = await pool.query(
+      "UPDATE expenses SET amount = ?, description = ?, date = ?, category_id = ? WHERE id = ? AND user_id = ?",
+      [amount, description, formattedDate, category_id, id, session.userId],
     );
+
+    if (rows.affectedRows === 0) {
+      return Response.json({ error: "Expense not found." }, { status: 404 });
+    }
 
     return Response.json(
       { message: "Expense updated successfully" },
@@ -41,9 +51,21 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const session = await getCurrentUser();
+    if (!session) {
+      return Response.json({ error: "Not logged in." }, { status: 401 });
+    }
+
     const { id } = await params;
 
-    await pool.query("DELETE FROM expenses WHERE id = ?", [id]);
+    const [rows]: any = await pool.query(
+      "DELETE FROM expenses WHERE id = ? AND user_id = ?",
+      [id, session.userId],
+    );
+
+    if (rows.affectedRows === 0) {
+      return Response.json({ error: "Expense not found." }, { status: 404 });
+    }
 
     return Response.json({ message: "Expense deleted successfully" });
   } catch (error: any) {

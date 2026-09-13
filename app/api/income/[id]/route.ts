@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ id: number }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getCurrentUser();

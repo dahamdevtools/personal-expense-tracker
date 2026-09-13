@@ -18,7 +18,7 @@ export async function PUT(
     const { category_id, amount, description, date } = body;
     const formattedDate = format(new Date(date), "yyyy-MM-dd HH:mm:ss");
 
-    if (!category_id || !amount || !amount || !date) {
+    if (!category_id || !amount || !amount.trim() || !date) {
       return Response.json(
         { error: "All fields are required except description." },
         { status: 400 },
@@ -36,7 +36,7 @@ export async function PUT(
 
     return Response.json(
       { message: "Expense updated successfully" },
-      { status: 201 },
+      { status: 200 },
     );
   } catch (error: any) {
     return Response.json(

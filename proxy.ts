@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken } from "@/lib/auth";
 
-const protectedRoutes = ["/dashboard", "/expenses", "/income"];
+const protectedRoutes = ["/dashboard", "/expenses", "/income", "/profile"];
 const authRoutes = ["/login", "/signup"];
 
 export async function proxy(req: NextRequest) {
@@ -30,6 +30,7 @@ export const config = {
     "/dashboard/:path*",
     "/expenses/:path*",
     "/income/:path*",
+    "/profile/:path*",
     "/login",
     "/signup",
   ],

@@ -36,7 +36,6 @@ export default function EditExpenseModal({
         method: "PUT",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({
-          user_id: 2,
           category_id: category,
           amount: Math.floor(parseFloat(amount) * 100) / 100,
           description,

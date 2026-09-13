@@ -1,15 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Profile() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [currency, setCurrency] = useState("");
   const [saveLoading, setSaveLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSave = async () => {};
+  const router = useRouter();
 
-  const handleDelete = async () => {};
+  const getUser = async () => {
+    const res = await fetch("/api/auth/me");
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Failed to fetch user data", data.error);
+      setError(data.error);
+      return;
+    }
+
+    setName(data.username);
+    setEmail(data.email);
+    setCurrency(data.currency);
+  };
+
+  const handleSave = async () => {
+    setError("");
+    setSaveLoading(true);
+
+    try {
+      const res = await fetch("/api/user/", {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ username: name, currency }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        setSaveLoading(false);
+        return;
+      }
+
+      getUser();
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to update profile", error);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setError("");
+    setDeleteLoading(true);
+
+    try {
+      const res = await fetch("/api/user/", { method: "DELETE" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        setDeleteLoading(false);
+        return;
+      }
+
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to delete user", error);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
@@ -23,6 +94,8 @@ export default function Profile() {
             spellCheck="false"
             className="w-full h-10 rounded-xl px-4 truncate bg-neutral-200/50"
             placeholder="Enter your Name..."
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="w-full h-fit flex flex-col gap-2">
@@ -34,6 +107,7 @@ export default function Profile() {
             className="w-full h-10 disabled:opacity-50 rounded-xl px-4 truncate bg-neutral-200/50"
             placeholder="Enter your Email..."
             disabled={true}
+            value={email}
           />
         </div>
         <div className="w-full h-fit flex flex-col gap-2">
@@ -45,18 +119,22 @@ export default function Profile() {
             className="w-full h-10 disabled:opacity-50 rounded-xl px-4 truncate bg-neutral-200/50"
             placeholder="Enter your Password..."
             disabled={true}
+            value={"password"}
           />
         </div>
         <div className="w-full h-fit flex flex-col gap-2">
-          <label htmlFor="currency">Prefered Currency</label>
+          <label htmlFor="currency">Preferred Currency</label>
           <input
             id="currency"
             type="text"
             spellCheck="false"
             className="w-full h-10 rounded-xl px-4 truncate bg-neutral-200/50"
             placeholder="USD, AUD, LKR, $..."
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
           />
         </div>
+        {error && <p className="text-red-400">{error}</p>}
         <button
           onClick={handleSave}
           disabled={saveLoading}

@@ -94,7 +94,7 @@ export default function SignUp() {
             />
           </div>
           <div className="w-full h-fit flex flex-col gap-2">
-            <label htmlFor="currency">Prefered Currency</label>
+            <label htmlFor="currency">Preferred Currency</label>
             <input
               id="currency"
               type="text"

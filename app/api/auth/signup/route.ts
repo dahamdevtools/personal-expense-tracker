@@ -56,9 +56,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (currency.length > 100) {
+    if (currency.length > 10) {
       return Response.json(
-        { error: "Currency must be no more than 100 characters." },
+        { error: "Currency must be no more than 10 characters." },
         { status: 400 },
       );
     }
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       [username, email, hashedPassword, currency],
     );
 
-    return Response.json({ message: "Sign up successfull" }, { status: 201 });
+    return Response.json({ message: "Sign up successful" }, { status: 201 });
   } catch (error: any) {
     return Response.json(
       { error: "Failed to sign up: " + error.message },

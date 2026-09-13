@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const { password: _pw, ...safeUser } = user;
 
-    return Response.json({ message: "Login successfull", user: safeUser });
+    return Response.json({ message: "Login successful", user: safeUser });
   } catch (error: any) {
     return Response.json(
       { error: "Failed to login: " + error.message },

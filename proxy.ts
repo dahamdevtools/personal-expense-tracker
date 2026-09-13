@@ -4,7 +4,7 @@ import { verifySessionToken } from "@/lib/auth";
 const protectedRoutes = ["/dashboard", "/expenses", "/income"];
 const authRoutes = ["/login", "/signup"];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get("session")?.value;
   const session = token ? await verifySessionToken(token) : null;

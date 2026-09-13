@@ -8,16 +8,13 @@ You can try it right away using the demo link above, or set it up locally by fol
 
 ## Screenshots
 
-<table>
-  <tr>
-    <td><img src="./screenshots/dashboard.png" width="400"/></td>
-    <td><img src="./screenshots/expenses.png" width="400"/></td>
-  </tr>
-  <tr>
-    <td align="center">Dashboard</td>
-    <td align="center">Expenses</td>
-  </tr>
-</table>
+### Dashboard
+
+![Dashboard](./public/screenshots/dashboard.png)
+
+### Expenses
+
+![Expenses](./public/screenshots/expenses.png)
 
 ## Features
 

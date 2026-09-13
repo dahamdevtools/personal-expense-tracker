@@ -6,6 +6,19 @@ A simple web app to track your personal income and expenses. Built as a learning
 
 You can try it right away using the demo link above, or set it up locally by following the steps below.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="./screenshots/dashboard.png" width="400"/></td>
+    <td><img src="./screenshots/expenses.png" width="400"/></td>
+  </tr>
+  <tr>
+    <td align="center">Dashboard</td>
+    <td align="center">Expenses</td>
+  </tr>
+</table>
+
 ## Features
 
 - User signup and login with secure, hashed passwords
